@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日時整形マン</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* * 全体のフォントと背景色を設定します。
+         * 親しみやすさを出すために、丸ゴシック系のフォントと薄いピンクの背景色を採用しています。
+         */
+        body {
+            font-family: 'M PLUS Rounded 1c', 'Inter', sans-serif;
+            background-color: #fff0f5; /* ごく薄いピンクの背景 */
+        }
+
+        /* * メインコンテナのスタイルです。
+         * 角を丸くし、影をつけることで、柔らかい印象を与えます。
+         */
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+        }
+
+        /* * テキストエリアの共通スタイルです。
+         * ユーザーが快適に入力できるよう、見た目と操作性を調整しています。
+         */
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 1px solid #ffe4e6; /* 薄いピンクのボーダー */
+            border-radius: 10px;
+            font-size: 1rem;
+            line-height: 1.6; /* 行間を少し広げて読みやすく */
+            color: #4a4a4a;
+            background-color: #ffffff;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            resize: vertical; /* 縦方向のみリサイズ可能に */
+        }
+
+        /* * テキストエリアがフォーカスされたときのスタイルです。
+         * どの要素を操作しているか分かりやすくします。
+         */
+        textarea:focus {
+            outline: none;
+            border-color: #ff8fab; /* フォーカス時のボーダーを可愛いピンクに */
+            box-shadow: 0 0 0 4px rgba(255, 143, 171, 0.3);
+        }
+
+        /*
+         * ボタンの共通スタイルです。
+         * クリックしたくなるような、立体的でインタラクティブなデザインを目指します。
+         */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 700; /* フォントを太くして視認性アップ */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* 文字にわずかな影を追加 */
+        }
+        
+        /* * ボタンが押されたときのアクティブなスタイルです。
+         */
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /*
+         * プライマリーボタン（コピーボタン）のスタイルです。
+         */
+        .btn-primary {
+            background-color: #ff8fab; /* 可愛いピンク */
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff6b91; /* ホバー時の濃いピンク */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /*
+         * セカンダリーボタン（クリアボタン）のスタイルです。
+         */
+        .btn-secondary {
+            background-color: #d8b4fe; /* 優しいラベンダー */
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #c084fc; /* ホバー時の濃いラベンダー */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /*
+         * メッセージボックスのスタイルです。
+         * 画面中央にフィードバックを分かりやすく表示します。
+         */
+        .message-box {
+            position: fixed;
+            top: 20px; /* 上部に表示 */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            pointer-events: none;
+            transform: translate(-50%, -20px);
+        }
+
+        .message-box.show {
+            opacity: 1;
+            pointer-events: all;
+            transform: translate(-50%, 0);
+        }
+        
+        /* * 年表示など、特定のテキストをハイライトするためのスタイルです。
+         */
+        .text-cute-pink {
+            color: #ff8fab;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="container w-full">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-4">🗓️ 日時整形マン</h1>
+
+        <!-- 情報表示ボックス -->
+        <div class="bg-pink-50 border border-pink-200 rounded-lg p-3 text-center mb-6">
+            <p id="todaysDate" class="text-gray-700 font-semibold"></p>
+            <p id="baseYearInfo" class="text-xs text-gray-500 mt-1"></p>
+        </div>
+
+
+        <!-- 入力と出力のエリア -->
+        <div class="flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
+            <!-- 入力欄 -->
+            <div class="flex-1">
+                <label for="inputDates" class="block text-gray-700 text-sm font-semibold mb-2">入力欄 (各日程を改行して入力):</label>
+                <textarea id="inputDates" placeholder="例:&#10;11:00-12:00 7/1 (ミーティング)&#10;2025/05/05は終日OKです。&#10;2025-07-05も可能です。"></textarea>
+            </div>
+
+            <!-- 出力欄 -->
+            <div class="flex-1">
+                <label for="outputDates" class="block text-gray-700 text-sm font-semibold mb-2">整形された日程:</label>
+                <textarea id="outputDates" readonly class="bg-gray-50 cursor-not-allowed"></textarea>
+            </div>
+        </div>
+
+        <!-- ボタンエリア -->
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
+            <button id="copyButton" class="btn btn-primary">整形された日程をコピー</button>
+            <button id="clearButton" class="btn btn-secondary">クリア</button>
+        </div>
+    </div>
+
+    <!-- メッセージ表示用の要素 -->
+    <div id="messageBox" class="message-box"></div>
+
+    <script type="module">
+        // --- DOM要素の取得 ---
+        const inputDates = document.getElementById('inputDates');
+        const outputDates = document.getElementById('outputDates');
+        const copyButton = document.getElementById('copyButton');
+        const clearButton = document.getElementById('clearButton');
+        const messageBox = document.getElementById('messageBox');
+        const todaysDateElement = document.getElementById('todaysDate');
+        const baseYearInfoElement = document.getElementById('baseYearInfo');
+
+        // --- 定数定義 ---
+        const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        
+        // --- 今日の日付と基準年情報を表示 ---
+        const month = today.getMonth() + 1;
+        const day = today.getDate();
+        const dayOfWeek = weekdays[today.getDay()];
+        todaysDateElement.textContent = `今日の日付: ${currentYear}年${month}月${day}日（${dayOfWeek}）`;
+        baseYearInfoElement.innerHTML = `💡 「7/1」など年を省略した入力は、今日現在の<span class="font-bold text-cute-pink">${currentYear}年</span>で整形します。`;
+
+
+        /**
+         * ユーザーへのフィードバックメッセージを表示する関数
+         * @param {string} message - 表示するメッセージ
+         * @param {number} [duration=2000] - 表示時間（ミリ秒）
+         */
+        function showMessageBox(message, duration = 2000) {
+            messageBox.textContent = message;
+            messageBox.classList.add('show');
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, duration);
+        }
+        
+       /**
+         * 1行の文字列をスマートに解析し、日付や時刻の部分だけを整形する関数
+         * @param {string} line - 整形対象の1行の文字列
+         * @returns {string} - 整形後の文字列
+         */
+        function formatLineSmartly(line) {
+            if (!line) return '';
+            let formattedLine = line;
+
+            // 1.
+            // \b は単語の境界を示し、数字の一部を誤ってマッチさせないようにする
+            formattedLine = formattedLine.replace(/\b(\d{4})[-/](\d{1,2})[-/](\d{1,2})\b/g, (match, year, month, day) => {
+                const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10));
+                // 日付が妥当か（例: 2025/02/30 のような不正な日付でないか）を確認
+                // JSのDateは2/30を3/1のように解釈するため、元の月と一致するかチェックする
+                if (!isNaN(date.getTime()) && date.getMonth() === parseInt(month, 10) - 1) {
+                    const dayOfWeek = weekdays[date.getDay()];
+                    return `${parseInt(year, 10)}年${parseInt(month, 10)}月${parseInt(day, 10)}日（${dayOfWeek}）`;
+                }
+                return match; // 不正な日付の場合は元の文字列を返す
+            });
+            
+            // 2. M/D 形式の日付を置換
+            // 月(1-12)と日(1-31)の妥当な範囲でマッチさせ、誤変換を防ぐ
+            formattedLine = formattedLine.replace(/\b(0?[1-9]|1[0-2])\/(0?[1-9]|[12]\d|3[01])\b/g, (match, month, day) => {
+                 const year = currentYear; // 今年の年を基準年として使用
+                 const date = new Date(year, parseInt(month, 10) - 1, parseInt(day, 10));
+                 // JSのDateオブジェクトで、さらに日付の妥当性（例: 2/30など）をチェック
+                 if (!isNaN(date.getTime()) && date.getMonth() === parseInt(month, 10) - 1) {
+                    const dayOfWeek = weekdays[date.getDay()];
+                    return `${parseInt(month, 10)}月${parseInt(day, 10)}日（${dayOfWeek}）`;
+                }
+                return match;
+            });
+
+            // 3. HH:MM-HH:MM 形式の時間を置換
+            formattedLine = formattedLine.replace(/(\d{2}:\d{2})-(\d{2}:\d{2})/g, (match, startTime, endTime) => {
+                return `${startTime}〜${endTime}`;
+            });
+
+            return formattedLine;
+        }
+
+        /**
+         * 入力欄のテキスト全体を処理し、整形結果を出力欄に表示する関数
+         */
+        function processInput() {
+            const inputText = inputDates.value;
+            const lines = inputText.split('\n');
+
+            const formattedLines = lines.map(line => formatLineSmartly(line.trim()));
+            
+            outputDates.value = formattedLines.join('\n');
+        }
+
+        // --- イベントリスナーの設定 ---
+
+        // 入力があるたびにリアルタイムで整形処理を実行
+        inputDates.addEventListener('input', processInput);
+
+        // 「コピー」ボタンがクリックされたときの処理
+        copyButton.addEventListener('click', () => {
+            if (outputDates.value) {
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(outputDates.value).then(() => {
+                        showMessageBox('コピーしました！ ✨');
+                    }).catch(err => {
+                        console.error('クリップボードへのコピーに失敗しました:', err);
+                        showMessageBox('コピーに失敗しました 😢');
+                    });
+                } else {
+                    try {
+                        outputDates.select();
+                        document.execCommand('copy');
+                        showMessageBox('コピーしました！ ✨');
+                    } catch (err) {
+                        console.error('コピーエラー(execCommand):', err);
+                        showMessageBox('コピーに失敗しました 😢');
+                    }
+                }
+            } else {
+                showMessageBox('コピーする日程がありません。');
+            }
+        });
+
+        // 「クリア」ボタンがクリックされたときの処理
+        clearButton.addEventListener('click', () => {
+            inputDates.value = '';
+            outputDates.value = '';
+            showMessageBox('クリアしました。');
+            inputDates.focus(); // クリア後に入力欄にフォーカスを移動
+        });
+
+        // ページ読み込み完了時にも一度処理を実行
+        window.addEventListener('load', processInput);
+    </script>
+</body>
+</html>
