@@ -184,14 +184,20 @@
         const baseYearInfoElement = document.getElementById('baseYearInfo');
 
         // --- 定数定義 ---
-        const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+        const CONFIG = {
+            weekdays: ['日', '月', '火', '水', '木', '金', '土'],
+            yearRange: { min: 1900, max: 2100 },
+            timeRange: { hour: { min: 0, max: 23 }, minute: { min: 0, max: 59 } },
+            messageDuration: 2000
+        };
+        
         const today = new Date();
         const currentYear = today.getFullYear();
         
         // --- 今日の日付と基準年情報を表示 ---
         const month = today.getMonth() + 1;
         const day = today.getDate();
-        const dayOfWeek = weekdays[today.getDay()];
+        const dayOfWeek = CONFIG.weekdays[today.getDay()];
         todaysDateElement.textContent = `今日の日付: ${currentYear}年${month}月${day}日（${dayOfWeek}）`;
         baseYearInfoElement.innerHTML = `💡 「7/1」など年を省略した入力は、今日現在の<span class="font-bold text-cute-pink">${currentYear}年</span>で整形します。`;
 
@@ -199,9 +205,9 @@
         /**
          * ユーザーへのフィードバックメッセージを表示する関数
          * @param {string} message - 表示するメッセージ
-         * @param {number} [duration=2000] - 表示時間（ミリ秒）
+         * @param {number} [duration] - 表示時間（ミリ秒）
          */
-        function showMessageBox(message, duration = 2000) {
+        function showMessageBox(message, duration = CONFIG.messageDuration) {
             messageBox.textContent = message;
             messageBox.classList.add('show');
             setTimeout(() => {
@@ -210,25 +216,83 @@
         }
         
         /**
-         * 時刻として妥当かどうかをチェックする関数
-         * @param {string} timeStr - 4桁の時刻文字列（例: "1200"）
-         * @returns {boolean} - 妥当な時刻かどうか
+         * 時刻処理を担当するクラス
          */
-        function isValidTime(timeStr) {
-            const hour = parseInt(timeStr.substring(0, 2), 10);
-            const minute = parseInt(timeStr.substring(2, 4), 10);
-            return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59;
+        class TimeFormatter {
+            /**
+             * 時刻として妥当かどうかをチェックする
+             * @param {string} timeStr - 4桁の時刻文字列（例: "1200"）
+             * @returns {boolean} - 妥当な時刻かどうか
+             */
+            static isValidTime(timeStr) {
+                const hour = parseInt(timeStr.substring(0, 2), 10);
+                const minute = parseInt(timeStr.substring(2, 4), 10);
+                return hour >= CONFIG.timeRange.hour.min && hour <= CONFIG.timeRange.hour.max && 
+                       minute >= CONFIG.timeRange.minute.min && minute <= CONFIG.timeRange.minute.max;
+            }
+
+            /**
+             * 4桁の時刻文字列をHH:MM形式に変換する
+             * @param {string} timeStr - 4桁の時刻文字列（例: "1200"）
+             * @returns {string} - HH:MM形式の時刻
+             */
+            static formatTime(timeStr) {
+                const hour = timeStr.substring(0, 2);
+                const minute = timeStr.substring(2, 4);
+                return `${hour}:${minute}`;
+            }
+
+            /**
+             * 時刻範囲をフォーマットする
+             * @param {string} startTime - 開始時刻
+             * @param {string} endTime - 終了時刻
+             * @returns {string} - フォーマットされた時刻範囲
+             */
+            static formatTimeRange(startTime, endTime) {
+                return `${startTime}〜${endTime}`;
+            }
         }
 
         /**
-         * 4桁の時刻文字列をHH:MM形式に変換する関数
-         * @param {string} timeStr - 4桁の時刻文字列（例: "1200"）
-         * @returns {string} - HH:MM形式の時刻
+         * 日付処理を担当するクラス
          */
-        function formatTime(timeStr) {
-            const hour = timeStr.substring(0, 2);
-            const minute = timeStr.substring(2, 4);
-            return `${hour}:${minute}`;
+        class DateFormatter {
+            /**
+             * 日付が妥当かどうかをチェックする
+             * @param {number} year - 年
+             * @param {number} month - 月
+             * @param {number} day - 日
+             * @returns {boolean} - 妥当な日付かどうか
+             */
+            static isValidDate(year, month, day) {
+                const date = new Date(year, month - 1, day);
+                return !isNaN(date.getTime()) && date.getMonth() === month - 1;
+            }
+
+            /**
+             * 日付を日本語形式にフォーマットする
+             * @param {number} year - 年
+             * @param {number} month - 月
+             * @param {number} day - 日
+             * @returns {string} - フォーマットされた日付
+             */
+            static formatDate(year, month, day) {
+                const date = new Date(year, month - 1, day);
+                const dayOfWeek = CONFIG.weekdays[date.getDay()];
+                return `${year}年${month}月${day}日（${dayOfWeek}）`;
+            }
+
+            /**
+             * 月日を日本語形式にフォーマットする（年は現在年を使用）
+             * @param {number} month - 月
+             * @param {number} day - 日
+             * @returns {string} - フォーマットされた月日
+             */
+            static formatMonthDay(month, day) {
+                const date = new Date(currentYear, month - 1, day);
+                const dayOfWeek = CONFIG.weekdays[date.getDay()];
+                return `${month}月${day}日（${dayOfWeek}）`;
+            }
         }
 
         /**
@@ -241,57 +305,52 @@
             let formattedLine = line;
 
             // 1. YYYY/MM/DD または YYYY-MM-DD 形式の日付を置換
-            // \b は単語の境界を示し、数字の一部を誤ってマッチさせないようにする
             formattedLine = formattedLine.replace(/\b(\d{4})[-/](\d{1,2})[-/](\d{1,2})\b/g, (match, year, month, day) => {
-                const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10));
-                // 日付が妥当か（例: 2025/02/30 のような不正な日付でないか）を確認
-                // JSのDateは2/30を3/1のように解釈するため、元の月と一致するかチェックする
-                if (!isNaN(date.getTime()) && date.getMonth() === parseInt(month, 10) - 1) {
-                    const dayOfWeek = weekdays[date.getDay()];
-                    return `${parseInt(year, 10)}年${parseInt(month, 10)}月${parseInt(day, 10)}日（${dayOfWeek}）`;
+                const yearNum = parseInt(year, 10);
+                const monthNum = parseInt(month, 10);
+                const dayNum = parseInt(day, 10);
+                
+                if (DateFormatter.isValidDate(yearNum, monthNum, dayNum)) {
+                    return DateFormatter.formatDate(yearNum, monthNum, dayNum);
                 }
-                return match; // 不正な日付の場合は元の文字列を返す
+                return match;
             });
 
-            // 2. M/D または M-D 形式の日付を置換（共通化・強化）
-            // 月(1-12)と日(1-31)の妥当な範囲でマッチさせ、誤変換を防ぐ
+            // 2. M/D または M-D 形式の日付を置換
             formattedLine = formattedLine.replace(/\b(0?[1-9]|1[0-2])[\/-](0?[1-9]|[12]?\d|3[01])\b/g, (match, month, day) => {
-                 const year = currentYear; // 今年の年を基準年として使用
-                 const date = new Date(year, parseInt(month, 10) - 1, parseInt(day, 10));
-                 // JSのDateオブジェクトで、さらに日付の妥当性（例: 2/30、2-30など）をチェック
-                 if (!isNaN(date.getTime()) && date.getMonth() === parseInt(month, 10) - 1) {
-                    const dayOfWeek = weekdays[date.getDay()];
-                    return `${parseInt(month, 10)}月${parseInt(day, 10)}日（${dayOfWeek}）`;
+                const monthNum = parseInt(month, 10);
+                const dayNum = parseInt(day, 10);
+                
+                if (DateFormatter.isValidDate(currentYear, monthNum, dayNum)) {
+                    return DateFormatter.formatMonthDay(monthNum, dayNum);
                 }
                 return match;
             });
 
             // 3. 4桁の時刻形式（HHMM-HHMM）を置換
-            // 例: 1200-1300 → 12:00〜13:00
             formattedLine = formattedLine.replace(/\b(\d{4})-(\d{4})\b/g, (match, startTime, endTime) => {
-                // 両方とも妥当な時刻かチェック
-                if (isValidTime(startTime) && isValidTime(endTime)) {
-                    return `${formatTime(startTime)}〜${formatTime(endTime)}`;
+                if (TimeFormatter.isValidTime(startTime) && TimeFormatter.isValidTime(endTime)) {
+                    return TimeFormatter.formatTimeRange(
+                        TimeFormatter.formatTime(startTime), 
+                        TimeFormatter.formatTime(endTime)
+                    );
                 }
-                return match; // 時刻として妥当でない場合は元の文字列を返す
+                return match;
             });
 
             // 4. HH:MM-HH:MM 形式の時間を置換
             formattedLine = formattedLine.replace(/(\d{2}:\d{2})-(\d{2}:\d{2})/g, (match, startTime, endTime) => {
-                return `${startTime}〜${endTime}`;
+                return TimeFormatter.formatTimeRange(startTime, endTime);
             });
 
             // 5. 単独の4桁数字を年として解釈
-            // 例: 2025 → 2025年
             formattedLine = formattedLine.replace(/\b(\d{4})\b/g, (match, year, offset, string) => {
                 const yearNum = parseInt(year, 10);
-                // 妥当な年の範囲かチェック（1900-2100年）
-                if (yearNum >= 1900 && yearNum <= 2100) {
-                    // 既に「年」が付いている場合は処理をスキップ
+                
+                if (yearNum >= CONFIG.yearRange.min && yearNum <= CONFIG.yearRange.max) {
                     const beforeMatch = string.substring(0, offset);
                     const afterMatch = string.substring(offset + match.length);
                     
-                    // 前後に「年」があるかチェック
                     if (beforeMatch.endsWith('年') || afterMatch.startsWith('年')) {
                         return match;
                     }
