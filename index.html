@@ -287,6 +287,15 @@
                 const yearNum = parseInt(year, 10);
                 // 妥当な年の範囲かチェック（1900-2100年）
                 if (yearNum >= 1900 && yearNum <= 2100) {
+                    // 既に「年」が付いている場合は処理をスキップ
+                    const beforeMatch = formattedLine.substring(0, formattedLine.indexOf(match));
+                    const afterMatch = formattedLine.substring(formattedLine.indexOf(match) + match.length);
+                    
+                    // 前後に「年」があるかチェック
+                    if (beforeMatch.endsWith('年') || afterMatch.startsWith('年')) {
+                        return match;
+                    }
+                    
                     return `${yearNum}年`;
                 }
                 return match;
