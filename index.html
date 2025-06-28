@@ -283,13 +283,13 @@
 
             // 5. 単独の4桁数字を年として解釈
             // 例: 2025 → 2025年
-            formattedLine = formattedLine.replace(/\b(\d{4})\b/g, (match, year) => {
+            formattedLine = formattedLine.replace(/\b(\d{4})\b/g, (match, year, offset, string) => {
                 const yearNum = parseInt(year, 10);
                 // 妥当な年の範囲かチェック（1900-2100年）
                 if (yearNum >= 1900 && yearNum <= 2100) {
                     // 既に「年」が付いている場合は処理をスキップ
-                    const beforeMatch = formattedLine.substring(0, formattedLine.indexOf(match));
-                    const afterMatch = formattedLine.substring(formattedLine.indexOf(match) + match.length);
+                    const beforeMatch = string.substring(0, offset);
+                    const afterMatch = string.substring(offset + match.length);
                     
                     // 前後に「年」があるかチェック
                     if (beforeMatch.endsWith('年') || afterMatch.startsWith('年')) {
