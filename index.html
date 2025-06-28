@@ -270,9 +270,9 @@
                 return match;
             });
 
-            // 2. M/D または M-D 形式の日付を置換（共通化）
+            // 2. M/D または M-D 形式の日付を置換（共通化・強化）
             // 月(1-12)と日(1-31)の妥当な範囲でマッチさせ、誤変換を防ぐ
-            formattedLine = formattedLine.replace(/\b(0?[1-9]|1[0-2])[\/-](0?[1-9]|[12]\d|3[01])\b/g, (match, month, day) => {
+            formattedLine = formattedLine.replace(/\b(0?[1-9]|1[0-2])[\/-](0?[1-9]|[12]?\d|3[01])\b/g, (match, month, day) => {
                  const year = currentYear; // 今年の年を基準年として使用
                  const date = new Date(year, parseInt(month, 10) - 1, parseInt(day, 10));
                  // JSのDateオブジェクトで、さらに日付の妥当性（例: 2/30、2-30など）をチェック
