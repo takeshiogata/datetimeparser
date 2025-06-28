@@ -153,7 +153,7 @@
             <!-- 入力欄 -->
             <div class="flex-1">
                 <label for="inputDates" class="block text-gray-700 text-sm font-semibold mb-2">入力欄 (各日程を改行して入力):</label>
-                <textarea id="inputDates" placeholder="例:&#10;11:00-12:00 7/1 (ミーティング)&#10;2025/05/05は終日OKです。&#10;2025-07-05も可能です。"></textarea>
+                <textarea id="inputDates" placeholder="例:&#10;11:00-12:00 7/1 (ミーティング)&#10;1200-1300 5/15 (ランチ)&#10;2025/05/05は終日OKです。&#10;2025-07-05も可能です。&#10;2025年は良い年になりそうです。"></textarea>
             </div>
 
             <!-- 出力欄 -->
@@ -209,7 +209,29 @@
             }, duration);
         }
         
-       /**
+        /**
+         * 時刻として妥当かどうかをチェックする関数
+         * @param {string} timeStr - 4桁の時刻文字列（例: "1200"）
+         * @returns {boolean} - 妥当な時刻かどうか
+         */
+        function isValidTime(timeStr) {
+            const hour = parseInt(timeStr.substring(0, 2), 10);
+            const minute = parseInt(timeStr.substring(2, 4), 10);
+            return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59;
+        }
+
+        /**
+         * 4桁の時刻文字列をHH:MM形式に変換する関数
+         * @param {string} timeStr - 4桁の時刻文字列（例: "1200"）
+         * @returns {string} - HH:MM形式の時刻
+         */
+        function formatTime(timeStr) {
+            const hour = timeStr.substring(0, 2);
+            const minute = timeStr.substring(2, 4);
+            return `${hour}:${minute}`;
+        }
+
+        /**
          * 1行の文字列をスマートに解析し、日付や時刻の部分だけを整形する関数
          * @param {string} line - 整形対象の1行の文字列
          * @returns {string} - 整形後の文字列
@@ -218,7 +240,7 @@
             if (!line) return '';
             let formattedLine = line;
 
-            // 1.
+            // 1. YYYY/MM/DD または YYYY-MM-DD 形式の日付を置換
             // \b は単語の境界を示し、数字の一部を誤ってマッチさせないようにする
             formattedLine = formattedLine.replace(/\b(\d{4})[-/](\d{1,2})[-/](\d{1,2})\b/g, (match, year, month, day) => {
                 const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10));
@@ -229,45 +251,6 @@
                     return `${parseInt(year, 10)}年${parseInt(month, 10)}月${parseInt(day, 10)}日（${dayOfWeek}）`;
                 }
                 return match; // 不正な日付の場合は元の文字列を返す
-            });
-            
-            // 2. M/D 形式の日付を置換
-            // 月(1-12)と日(1-31)の妥当な範囲でマッチさせ、誤変換を防ぐ
-            formattedLine = formattedLine.replace(/\b(0?[1-9]|1[0-2])\/(0?[1-9]|[12]\d|3[01])\b/g, (match, month, day) => {
-                 const year = currentYear; // 今年の年を基準年として使用
-                 const date = new Date(year, parseInt(month, 10) - 1, parseInt(day, 10));
-                 // JSのDateオブジェクトで、さらに日付の妥当性（例: 2/30など）をチェック
-                 if (!isNaN(date.getTime()) && date.getMonth() === parseInt(month, 10) - 1) {
-                    const dayOfWeek = weekdays[date.getDay()];
-                    return `${parseInt(month, 10)}月${parseInt(day, 10)}日（${dayOfWeek}）`;
-                }
-                return match;
-            });
-
-            // 2.5. MM-DD 形式の日付を置換（02-22など）
-            // 月(01-12)と日(01-31)の妥当な範囲でマッチさせ、誤変換を防ぐ
-            formattedLine = formattedLine.replace(/\b(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])\b/g, (match, month, day) => {
-                 const year = currentYear; // 今年の年を基準年として使用
-                 const date = new Date(year, parseInt(month, 10) - 1, parseInt(day, 10));
-                 // JSのDateオブジェクトで、さらに日付の妥当性（例: 02-30など）をチェック
-                 if (!isNaN(date.getTime()) && date.getMonth() === parseInt(month, 10) - 1) {
-                    const dayOfWeek = weekdays[date.getDay()];
-                    return `${parseInt(month, 10)}月${parseInt(day, 10)}日（${dayOfWeek}）`;
-                }
-                return match;
-            });
-
-            // 2.6. M-D 形式の日付を置換（2-22など）
-            // 月(1-12)と日(1-31)の妥当な範囲でマッチさせ、誤変換を防ぐ
-            formattedLine = formattedLine.replace(/\b([1-9]|1[0-2])-([1-9]|[12]\d|3[01])\b/g, (match, month, day) => {
-                 const year = currentYear; // 今年の年を基準年として使用
-                 const date = new Date(year, parseInt(month, 10) - 1, parseInt(day, 10));
-                 // JSのDateオブジェクトで、さらに日付の妥当性（例: 2-30など）をチェック
-                 if (!isNaN(date.getTime()) && date.getMonth() === parseInt(month, 10) - 1) {
-                    const dayOfWeek = weekdays[date.getDay()];
-                    return `${parseInt(month, 10)}月${parseInt(day, 10)}日（${dayOfWeek}）`;
-                }
-                return match;
             });
 
             // 2. M/D または M-D 形式の日付を置換（共通化・強化）
@@ -283,9 +266,30 @@
                 return match;
             });
 
-            // 3. HH:MM-HH:MM 形式の時間を置換
+            // 3. 4桁の時刻形式（HHMM-HHMM）を置換
+            // 例: 1200-1300 → 12:00〜13:00
+            formattedLine = formattedLine.replace(/\b(\d{4})-(\d{4})\b/g, (match, startTime, endTime) => {
+                // 両方とも妥当な時刻かチェック
+                if (isValidTime(startTime) && isValidTime(endTime)) {
+                    return `${formatTime(startTime)}〜${formatTime(endTime)}`;
+                }
+                return match; // 時刻として妥当でない場合は元の文字列を返す
+            });
+
+            // 4. HH:MM-HH:MM 形式の時間を置換
             formattedLine = formattedLine.replace(/(\d{2}:\d{2})-(\d{2}:\d{2})/g, (match, startTime, endTime) => {
                 return `${startTime}〜${endTime}`;
+            });
+
+            // 5. 単独の4桁数字を年として解釈
+            // 例: 2025 → 2025年
+            formattedLine = formattedLine.replace(/\b(\d{4})\b/g, (match, year) => {
+                const yearNum = parseInt(year, 10);
+                // 妥当な年の範囲かチェック（1900-2100年）
+                if (yearNum >= 1900 && yearNum <= 2100) {
+                    return `${yearNum}年`;
+                }
+                return match;
             });
 
             return formattedLine;
