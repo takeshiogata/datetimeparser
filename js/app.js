@@ -36,6 +36,7 @@ export class DateTimeFormatterApp {
     _setupUI() {
         const todayInfo = DateFormatter.getTodayInfo();
         this.uiManager.displayTodayInfo(todayInfo);
+        this.uiManager.displayVersionInfo();
         
         // パーサーの現在年を更新
         this.parser.updateCurrentYear(todayInfo.year);
