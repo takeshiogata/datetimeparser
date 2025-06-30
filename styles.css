@@ -1,0 +1,128 @@
+/* * 全体のフォントと背景色を設定します。
+ * 親しみやすさを出すために、丸ゴシック系のフォントと薄いピンクの背景色を採用しています。
+ */
+body {
+    font-family: 'M PLUS Rounded 1c', 'Inter', sans-serif;
+    background-color: #fff0f5; /* ごく薄いピンクの背景 */
+}
+
+/* * メインコンテナのスタイルです。
+ * 角を丸くし、影をつけることで、柔らかい印象を与えます。
+ */
+.container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+}
+
+/* * テキストエリアの共通スタイルです。
+ * ユーザーが快適に入力できるよう、見た目と操作性を調整しています。
+ */
+textarea {
+    width: 100%;
+    min-height: 6.4rem; /* 4行分の高さ（1rem × 1.6 × 4行） */
+    padding: 1rem;
+    border: 1px solid #ffe4e6; /* 薄いピンクのボーダー */
+    border-radius: 10px;
+    font-size: 1rem;
+    line-height: 1.6; /* 行間を少し広げて読みやすく */
+    color: #4a4a4a;
+    background-color: #ffffff;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    resize: vertical; /* 縦方向のみリサイズ可能に */
+}
+
+/* * テキストエリアがフォーカスされたときのスタイルです。
+ * どの要素を操作しているか分かりやすくします。
+ */
+textarea:focus {
+    outline: none;
+    border-color: #ff8fab; /* フォーカス時のボーダーを可愛いピンクに */
+    box-shadow: 0 0 0 4px rgba(255, 143, 171, 0.3);
+}
+
+/*
+ * ボタンの共通スタイルです。
+ * クリックしたくなるような、立体的でインタラクティブなデザインを目指します。
+ */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 700; /* フォントを太くして視認性アップ */
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* 文字にわずかな影を追加 */
+}
+
+/* * ボタンが押されたときのアクティブなスタイルです。
+ */
+.btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/*
+ * プライマリーボタン（コピーボタン）のスタイルです。
+ */
+.btn-primary {
+    background-color: #ff8fab; /* 可愛いピンク */
+    color: #ffffff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #ff6b91; /* ホバー時の濃いピンク */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/*
+ * セカンダリーボタン（クリアボタン）のスタイルです。
+ */
+.btn-secondary {
+    background-color: #d8b4fe; /* 優しいラベンダー */
+    color: #ffffff;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #c084fc; /* ホバー時の濃いラベンダー */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/*
+ * メッセージボックスのスタイルです。
+ * 画面中央にフィードバックを分かりやすく表示します。
+ */
+.message-box {
+    position: fixed;
+    top: 20px; /* 上部に表示 */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    pointer-events: none;
+    transform: translate(-50%, -20px);
+}
+
+.message-box.show {
+    opacity: 1;
+    pointer-events: all;
+    transform: translate(-50%, 0);
+}
+
+/* * 年表示など、特定のテキストをハイライトするためのスタイルです。
+ */
+.text-cute-pink {
+    color: #ff8fab;
+} 

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日時整形マン - テスト</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .test-case { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .pass { background-color: #d4edda; }
+        .fail { background-color: #f8d7da; }
+        .test-title { font-weight: bold; }
+        .test-input { color: #666; }
+        .test-output { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>日時整形マン - 単体テスト</h1>
+    <div id="testResults"></div>
+
+    <script type="module">
+        import { DateFormatter } from '../js/date-formatter.js';
+        import { TimeFormatter } from '../js/time-formatter.js';
+        import { DateTimeParser } from '../js/datetime-parser.js';
+
+        class TestRunner {
+            constructor() {
+                this.tests = [];
+                this.results = [];
+            }
+
+            addTest(name, testFunc) {
+                this.tests.push({ name, testFunc });
+            }
+
+            async runAll() {
+                console.log('テストを開始します...');
+                
+                for (const test of this.tests) {
+                    try {
+                        const result = await test.testFunc();
+                        this.results.push({
+                            name: test.name,
+                            passed: result.passed,
+                            message: result.message,
+                            input: result.input,
+                            expected: result.expected,
+                            actual: result.actual
+                        });
+                    } catch (error) {
+                        this.results.push({
+                            name: test.name,
+                            passed: false,
+                            message: `エラー: ${error.message}`,
+                            input: '',
+                            expected: '',
+                            actual: ''
+                        });
+                    }
+                }
+
+                this.displayResults();
+            }
+
+            displayResults() {
+                const container = document.getElementById('testResults');
+                const passedCount = this.results.filter(r => r.passed).length;
+                const totalCount = this.results.length;
+
+                container.innerHTML = `
+                    <h2>テスト結果: ${passedCount}/${totalCount} 通過</h2>
+                    ${this.results.map(result => `
+                        <div class="test-case ${result.passed ? 'pass' : 'fail'}">
+                            <div class="test-title">${result.passed ? '✅' : '❌'} ${result.name}</div>
+                            ${result.input ? `<div class="test-input">入力: ${result.input}</div>` : ''}
+                            ${result.expected ? `<div>期待値: ${result.expected}</div>` : ''}
+                            ${result.actual ? `<div class="test-output">実際値: ${result.actual}</div>` : ''}
+                            <div>${result.message}</div>
+                        </div>
+                    `).join('')}
+                `;
+            }
+        }
+
+        const runner = new TestRunner();
+
+        // DateFormatterのテスト
+        runner.addTest('DateFormatter.isValidDate - 有効な日付', () => {
+            const result = DateFormatter.isValidDate(2025, 2, 28);
+            return {
+                passed: result === true,
+                message: result ? '有効な日付として正しく判定' : '有効な日付が無効と判定された',
+                input: '2025, 2, 28',
+                expected: 'true',
+                actual: result.toString()
+            };
+        });
+
+        runner.addTest('DateFormatter.isValidDate - 無効な日付', () => {
+            const result = DateFormatter.isValidDate(2025, 2, 30);
+            return {
+                passed: result === false,
+                message: result ? '無効な日付が有効と判定された' : '無効な日付として正しく判定',
+                input: '2025, 2, 30',
+                expected: 'false',
+                actual: result.toString()
+            };
+        });
+
+        // TimeFormatterのテスト
+        runner.addTest('TimeFormatter.isValidTime - 有効な時刻', () => {
+            const result = TimeFormatter.isValidTime('1430');
+            return {
+                passed: result === true,
+                message: result ? '有効な時刻として正しく判定' : '有効な時刻が無効と判定された',
+                input: '1430',
+                expected: 'true',
+                actual: result.toString()
+            };
+        });
+
+        runner.addTest('TimeFormatter.isValidTime - 無効な時刻', () => {
+            const result = TimeFormatter.isValidTime('2560');
+            return {
+                passed: result === false,
+                message: result ? '無効な時刻が有効と判定された' : '無効な時刻として正しく判定',
+                input: '2560',
+                expected: 'false',
+                actual: result.toString()
+            };
+        });
+
+        // DateTimeParserのテスト
+        runner.addTest('DateTimeParser.formatLine - 日付フォーマット', () => {
+            const parser = new DateTimeParser();
+            const input = '2025/05/05 会議';
+            const result = parser.formatLine(input);
+            const expected = '2025年5月5日（月） 会議';
+            return {
+                passed: result === expected,
+                message: result === expected ? '日付が正しくフォーマットされた' : '日付フォーマットが期待と異なる',
+                input,
+                expected,
+                actual: result
+            };
+        });
+
+        runner.addTest('DateTimeParser.formatLine - 時刻フォーマット', () => {
+            const parser = new DateTimeParser();
+            const input = '1400-1500 会議';
+            const result = parser.formatLine(input);
+            const expected = '14:00〜15:00 会議';
+            return {
+                passed: result === expected,
+                message: result === expected ? '時刻が正しくフォーマットされた' : '時刻フォーマットが期待と異なる',
+                input,
+                expected,
+                actual: result
+            };
+        });
+
+        // テスト実行
+        document.addEventListener('DOMContentLoaded', () => {
+            runner.runAll();
+        });
+    </script>
+</body>
+</html> 
