@@ -77,7 +77,8 @@ python -m http.server 8000
 # または Node.js
 npx serve .
 
-# ブラウザで http://localhost:8000 を開く
+# ブラウザで以下のURLにアクセス
+http://localhost:8000/tests/test.html
 ```
 
 ### GitHub Pages デプロイ
