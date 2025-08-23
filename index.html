@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>日時整形マン</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗓️</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
@@ -22,15 +23,15 @@
         </div>
 
         <!-- 入力と出力のエリア -->
-        <div class="flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
+        <div class="flex flex-col md:flex-row md:space-x-12 space-y-6 md:space-y-0 justify-center items-start">
             <!-- 入力欄 -->
-            <div class="flex-1">
+            <div class="w-full md:w-auto md:min-w-[480px]">
                 <label for="inputDates" class="block text-gray-700 text-sm font-semibold mb-2">入力欄 (各日程を改行して入力):</label>
                 <textarea id="inputDates" placeholder="例:&#10;11:00-12:00 7/1 (ミーティング)&#10;1200-1300 5/15 (ランチ)&#10;2025/05/05は終日OKです。&#10;2025-07-05も可能です。&#10;2025年は良い年になりそうです。"></textarea>
             </div>
 
             <!-- 出力欄 -->
-            <div class="flex-1">
+            <div class="w-full md:w-auto md:min-w-[480px]">
                 <label for="outputDates" class="block text-gray-700 text-sm font-semibold mb-2">整形された日程:</label>
                 <textarea id="outputDates" readonly class="bg-gray-50 cursor-not-allowed"></textarea>
             </div>

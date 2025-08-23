@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>デバッグ - 日時整形マン</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="container w-full flex flex-col items-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">🐛 デバッグモード</h1>
+        
+        <!-- 今日の日付ボックス -->
+        <div class="bg-pink-50 border border-pink-200 rounded-lg p-3 text-center mb-6">
+            <p id="todaysDate" class="text-gray-700 font-semibold">読み込み中...</p>
+            <p id="baseYearInfo" class="text-xs text-gray-500 mt-1">読み込み中...</p>
+        </div>
+
+        <!-- デバッグ情報 -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center mb-6">
+            <h3 class="font-semibold mb-2">デバッグ情報</h3>
+            <div id="debugInfo" class="text-sm text-gray-600"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { DateFormatter } from './js/date-formatter.js';
+        import { CONFIG } from './js/config.js';
+
+        // デバッグ情報を表示
+        function showDebugInfo() {
+            const debugInfo = document.getElementById('debugInfo');
+            const todayInfo = DateFormatter.getTodayInfo();
+            
+            debugInfo.innerHTML = `
+                <div>CONFIG.weekdays: ${JSON.stringify(CONFIG.weekdays)}</div>
+                <div>todayInfo: ${JSON.stringify(todayInfo)}</div>
+                <div>Date: ${new Date().toString()}</div>
+            `;
+        }
+
+        // 今日の日付を表示
+        function displayTodayInfo() {
+            try {
+                const todayInfo = DateFormatter.getTodayInfo();
+                document.getElementById('todaysDate').textContent = `今日の日付: ${todayInfo.formatted}`;
+                document.getElementById('baseYearInfo').innerHTML = 
+                    `💡 「7/1」など年を省略した入力は、今日現在の<span class="font-bold text-cute-pink">${todayInfo.year}年</span>で整形します。`;
+                
+                showDebugInfo();
+            } catch (error) {
+                console.error('エラーが発生しました:', error);
+                document.getElementById('todaysDate').textContent = `エラー: ${error.message}`;
+                document.getElementById('baseYearInfo').textContent = '日付の取得に失敗しました';
+            }
+        }
+
+        // ページ読み込み完了後に実行
+        document.addEventListener('DOMContentLoaded', displayTodayInfo);
+    </script>
+</body>
+</html>
