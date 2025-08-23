@@ -10,8 +10,7 @@ body {
  * 角を丸くし、影をつけることで、柔らかい印象を与えます。
  */
 .container {
-    max-width: 1000px; /* 800pxから1000pxに戻す */
-    margin: 2rem auto;
+    margin: 0 auto;
     padding: 2rem;
     background-color: #ffffff;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
@@ -23,7 +22,6 @@ body {
     .container {
         max-width: 95%;
         padding: 1.5rem;
-        margin: 1rem auto;
     }
     
     textarea {
@@ -37,7 +35,6 @@ body {
 textarea {
     width: 100%;
     min-height: 6.4rem; /* 4行分の高さ（1rem × 1.6 × 4行） */
-    max-width: 450px; /* 350pxから450pxに拡大 */
     padding: 1rem;
     border: 1px solid #ffe4e6; /* 薄いピンクのボーダー */
     border-radius: 10px;
