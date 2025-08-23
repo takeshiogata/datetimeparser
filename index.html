@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="min-h-screen p-4 flex items-center justify-center">
-    <div class="container w-full max-w-6xl flex flex-col">
+    <div class="container w-full max-w-6xl flex flex-col items-center">
         <h1 class="text-3xl font-bold text-gray-800 mb-4 flex items-center gap-2">
             <span>🗓️ 日時整形マン</span>
             <span id="versionInfo" class="align-middle inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium min-w-[56px] text-center"></span>
@@ -23,15 +23,15 @@
         </div>
 
         <!-- 入力と出力のエリア -->
-        <div class="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-8">
+        <div class="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-8 w-full">
             <!-- 入力欄 -->
-            <div class="flex-1">
+            <div class="w-full lg:w-1/2">
                 <label for="inputDates" class="block text-gray-700 text-sm font-semibold mb-2">入力欄 (各日程を改行して入力):</label>
                 <textarea id="inputDates" placeholder="例:&#10;11:00-12:00 7/1 (ミーティング)&#10;1200-1300 5/15 (ランチ)&#10;2025/05/05は終日OKです。&#10;2025-07-05も可能です。&#10;2025年は良い年になりそうです。"></textarea>
             </div>
 
             <!-- 出力欄 -->
-            <div class="flex-1">
+            <div class="w-full lg:w-1/2">
                 <label for="outputDates" class="block text-gray-700 text-sm font-semibold mb-2">整形された日程:</label>
                 <textarea id="outputDates" readonly class="bg-gray-50 cursor-not-allowed"></textarea>
             </div>

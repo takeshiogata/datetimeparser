@@ -1,116 +1,56 @@
-# 日時整形マン 🗓️
+# 日時整形マン
 
-**Version 1.2.0** (2025-06-30)
-
-日付と時刻の文字列を美しく整形するWebアプリケーションです。
-
-## 🌐 デモ
-
-[GitHub Pagesで公開中](https://takeshi.github.io/datetimeparser/)
+日付と時刻の入力テキストを整形するシンプルなWebアプリケーションです。
 
 ## 機能
 
-- **日付の整形**: `2025/05/05` → `2025年5月5日（月）`
-- **時刻の整形**: `11:00-12:00` → `11:00〜12:00`
-- **4桁時刻の整形**: `1200-1300` → `12:00〜13:00`
-- **単独年の整形**: `2025` → `2025年`
-- **月日の整形**: `7/1` → `7月1日（火）`（現在の年を基準）
-- **リアルタイム処理**: 入力と同時に整形結果を表示
+- 様々な形式の日時入力に対応
+- 年を省略した入力（例：7/1）は現在の年で自動補完
+- 整形された日程をコピー可能
+- レスポンシブデザイン対応
 
-## 使い方
-
-1. ブラウザで `index.html` を開く
-2. 左側の入力欄に日時情報を入力
-3. 右側の出力欄で整形結果を確認
-4. 「整形された日程をコピー」ボタンで結果をコピー
-
-## 対応フォーマット
-
-### 日付形式
-- `2025/05/05` または `2025-05-05` → `2025年5月5日（月）`
-- `7/1` または `07/01` → `7月1日（火）`
-- `02-22` → `2月22日（土）`
-- `2-22` → `2月22日（土）`
-
-### 時刻形式
-- `11:00-12:00` → `11:00〜12:00`
-- `1200-1300` → `12:00〜13:00`
-- `0900-1700` → `09:00〜17:00`
-
-### 年形式
-- `2025` → `2025年`（1900-2100年の範囲）
-
-### その他
-- その他のテキストはそのまま保持
-
-## 処理の優先順位
-
-1. **日付形式**（YYYY/MM/DD、M/D）が最優先
-2. **時刻形式**（HH:MM-HH:MM、HHMM-HHMM）が次に優先
-3. **単独の年**が最後に処理
-
-これにより、`2025/05/05`は日付として、`1200-1300`は時刻として、`2025`は年として適切に区別されます。
-
-## 妥当性チェック
-
-- **時刻**: 00-23時、00-59分の範囲のみ変換
-- **年**: 1900-2100年の範囲のみ変換
-- **日付**: 存在する日付のみ変換（例：2月30日は変換されません）
-
-## 技術仕様
-
-- HTML5 + CSS3 + JavaScript (ES6 Modules)
-- Tailwind CSS でスタイリング
-- モダンブラウザ対応
-- GitHub Pages でホスティング
-
-## 🚀 開発・デプロイ
+## 使用方法
 
 ### ローカル開発
+
 ```bash
-# リポジトリをクローン
-git clone https://github.com/takeshi/datetimeparser.git
-cd datetimeparser
+# 開発サーバーを起動
+./start-dev.sh
 
-# ローカルサーバーで起動（例：Python）
-python -m http.server 8000
-# または Node.js
-npx serve .
-
-# ブラウザで以下のURLにアクセス
-http://localhost:8000/tests/test.html
+# または直接実行
+python3 -m http.server 3000
 ```
 
-### GitHub Pages デプロイ
-1. リポジトリの Settings → Pages
-2. Source を "GitHub Actions" に設定
-3. main/master ブランチにプッシュすると自動デプロイ
+ブラウザで `http://localhost:3000` にアクセスしてください。
 
-### ファイル構成
+### 本番環境
+
+GitHub Pagesで自動デプロイされます：
+https://takeshiogata.github.io/datetimeparser/
+
+## 技術構成
+
+- **フロントエンド**: HTML5, CSS3, JavaScript (ES6 Modules)
+- **スタイリング**: Tailwind CSS (CDN)
+- **デプロイ**: GitHub Pages + GitHub Actions
+
+## ファイル構成
+
 ```
 datetimeparser/
-├── index.html              # メインHTML
-├── styles.css              # スタイルシート
-├── js/                     # JavaScriptモジュール
-│   ├── config.js           # 設定管理
-│   ├── date-formatter.js   # 日付処理
-│   ├── time-formatter.js   # 時刻処理
-│   ├── datetime-parser.js  # メイン処理
-│   ├── ui-manager.js       # UI操作
-│   └── app.js              # アプリケーション制御
-├── tests/
-│   └── test.html           # 単体テスト
-└── .github/workflows/
-    └── deploy.yml          # デプロイ設定
+├── index.html          # メインHTMLファイル
+├── styles.css          # カスタムCSS
+├── js/                 # JavaScriptモジュール
+│   ├── app.js         # メインアプリケーション
+│   ├── config.js      # 設定ファイル
+│   ├── ui-manager.js  # UI管理
+│   ├── date-formatter.js    # 日付整形
+│   ├── datetime-parser.js   # 日時解析
+│   └── time-formatter.js    # 時刻整形
+├── start-dev.sh        # 開発サーバー起動スクリプト
+└── .github/workflows/  # GitHub Actions設定
 ```
 
-## 🧪 テスト
-
-テストページを開いて機能を確認：
-```
-tests/test.html
-```
-
-## 📄 ライセンス
+## ライセンス
 
 MIT License 
