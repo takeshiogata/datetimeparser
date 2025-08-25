@@ -1,34 +1,56 @@
 # 日時整形マン
 
-日付と時刻の入力テキストを整形するWebアプリケーションです。
+日付と時刻の入力テキストを整形するシンプルなWebアプリケーションです。
 
 ## 機能
 
-- 様々な形式の日付・時刻入力を整形
-- 年を省略した入力に対応（現在年で自動補完）
-- レスポンシブデザインでiPhone対応
-- 整形された日程をクリップボードにコピー
+- 様々な形式の日時入力に対応
+- 年を省略した入力（例：7/1）は現在の年で自動補完
+- 整形された日程をコピー可能
+- レスポンシブデザイン対応
 
 ## 使用方法
 
-1. 入力欄に日程を入力（各日程を改行して入力）
-2. 自動的に整形された日程が表示される
-3. 「整形された日程をコピー」ボタンでクリップボードにコピー
+### ローカル開発
 
-## 対応入力形式
+```bash
+# 開発サーバーを起動
+./start-dev.sh
 
-- `11:00-12:00 7/1 (ミーティング)`
-- `1200-1300 5/15 (ランチ)`
-- `2025/05/05は終日OKです。`
-- `2025-07-05も可能です。`
+# または直接実行
+python3 -m http.server 3000
+```
 
-## 技術仕様
+ブラウザで `http://localhost:3000` にアクセスしてください。
 
-- HTML5 + CSS3 + JavaScript (ES6+)
-- Tailwind CSS
-- GitHub Pages対応
-- モバイルファーストデザイン
+### 本番環境
 
-## 更新履歴
+GitHub Pagesで自動デプロイされます：
+https://takeshiogata.github.io/datetimeparser/
 
-- v1.2.0: iPhone対応、日付表示の改行問題を解決 
+## 技術構成
+
+- **フロントエンド**: HTML5, CSS3, JavaScript (ES6 Modules)
+- **スタイリング**: Tailwind CSS (CDN)
+- **デプロイ**: GitHub Pages + GitHub Actions
+
+## ファイル構成
+
+```
+datetimeparser/
+├── index.html          # メインHTMLファイル
+├── styles.css          # カスタムCSS
+├── js/                 # JavaScriptモジュール
+│   ├── app.js         # メインアプリケーション
+│   ├── config.js      # 設定ファイル
+│   ├── ui-manager.js  # UI管理
+│   ├── date-formatter.js    # 日付整形
+│   ├── datetime-parser.js   # 日時解析
+│   └── time-formatter.js    # 時刻整形
+├── start-dev.sh        # 開発サーバー起動スクリプト
+└── .github/workflows/  # GitHub Actions設定
+```
+
+## ライセンス
+
+MIT License 
