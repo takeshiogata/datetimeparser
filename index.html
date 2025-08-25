@@ -10,19 +10,21 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗓️</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=1.2.5">
+    <link rel="stylesheet" href="styles.css?v=1.2.6">
 </head>
 <body class="min-h-screen p-4 flex items-center justify-center">
     <div class="container w-full max-w-6xl flex flex-col items-center">
         <h1 class="text-3xl font-bold text-gray-800 mb-4 flex items-center gap-2">
             <span>🗓️ 日時整形マン</span>
-            <span id="versionInfo" class="align-middle inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium min-w-[56px] text-center"></span>
+            <!-- バージョン情報（JavaScriptで動的に更新される） -->
+            <span id="versionInfo" class="align-middle inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium min-w-[56px] text-center">v1.2.0</span>
         </h1>
 
         <!-- 情報表示ボックス -->
         <div class="bg-pink-50 border border-pink-200 rounded-lg p-4 text-center mb-6 w-full">
+            <!-- 今日の日付表示（JavaScriptで動的に更新される） -->
             <p class="text-gray-700 font-semibold text-lg" style="white-space: nowrap;">
-                <span id="todaysDate"></span><span id="todaysWeekday"></span>
+                <span id="todaysDate">今日の日付: 読み込み中...</span><span id="todaysWeekday"></span>
             </p>
         </div>
 
@@ -52,7 +54,8 @@
     <div id="messageBox" class="message-box"></div>
 
     <script type="module">
-        import { DateTimeFormatterApp } from './js/app.js?v=1.2.5';
+        // 日時整形アプリケーションのメインモジュールを読み込み
+        import { DateTimeFormatterApp } from './js/app.js?v=1.2.6';
 
         // アプリケーションを初期化
         const app = new DateTimeFormatterApp();
