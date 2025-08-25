@@ -136,4 +136,32 @@ textarea:focus {
  */
 .text-cute-pink {
     color: #ff8fab;
+}
+
+/* 今日の日付表示の改行を防ぐスタイル */
+#todaysDate, #todaysWeekday {
+    white-space: nowrap;
+    display: inline;
+    word-break: keep-all;
+    overflow-wrap: normal;
+}
+
+/* 日付表示のコンテナ */
+.text-gray-700.font-semibold.text-lg {
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+}
+
+/* iPhoneでの表示を最適化 */
+@media (max-width: 480px) {
+    #todaysDate, #todaysWeekday {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    
+    /* iPhoneでの日付表示を最適化 */
+    .text-gray-700.font-semibold.text-lg {
+        font-size: 0.85rem;
+    }
 } 
