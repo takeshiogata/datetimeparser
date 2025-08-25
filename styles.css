@@ -132,11 +132,7 @@ textarea:focus {
     transform: translate(-50%, 0);
 }
 
-/* * 年表示など、特定のテキストをハイライトするためのスタイルです。
- */
-.text-cute-pink {
-    color: #ff8fab;
-}
+
 
 /* 今日の日付表示の改行を防ぐスタイル */
 #todaysDate, #todaysWeekday {

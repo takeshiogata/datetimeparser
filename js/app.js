@@ -1,7 +1,7 @@
-import { CONFIG } from './config.js';
-import { DateFormatter } from './date-formatter.js';
-import { DateTimeParser } from './datetime-parser.js';
-import { UIManager } from './ui-manager.js';
+import { CONFIG } from './config.js?v=1.2.6';
+import { DateFormatter } from './date-formatter.js?v=1.2.6';
+import { DateTimeParser } from './datetime-parser.js?v=1.2.6';
+import { UIManager } from './ui-manager.js?v=1.2.6';
 
 /**
  * 日時整形アプリケーションのメインクラス
@@ -40,7 +40,6 @@ export class DateTimeFormatterApp {
         
         // パーサーの現在年を更新
         this.parser.updateCurrentYear(todayInfo.year);
-        this.uiManager.displayBaseYearInfo(todayInfo.year);
     }
 
     /**
