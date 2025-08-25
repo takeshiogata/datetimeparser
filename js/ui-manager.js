@@ -16,7 +16,7 @@ export class UIManager {
     _getDOMElements() {
         const requiredElements = [
             'inputDates', 'outputDates', 'copyButton', 
-            'clearButton', 'messageBox', 'todaysDate', 'todaysWeekday', 'versionInfo', 'baseYearInfo'
+            'clearButton', 'messageBox', 'todaysDate', 'todaysWeekday', 'versionInfo'
         ];
 
         const elements = {};
@@ -71,7 +71,6 @@ export class UIManager {
      * @param {number} [duration] - 表示時間（ミリ秒）
      */
     showMessage(message, duration = CONFIG.messageDuration) {
-        // 既存のタイマーをクリア
         if (this.messageTimeout) {
             clearTimeout(this.messageTimeout);
         }
@@ -95,14 +94,6 @@ export class UIManager {
     }
 
     /**
-     * 基準年を表示する
-     * @param {number} year - 基準年
-     */
-    displayBaseYearInfo(year) {
-        this.elements.baseYearInfo.textContent = `基準年: ${year}年`;
-    }
-
-    /**
      * バージョン情報を表示する
      */
     displayVersionInfo() {
@@ -120,7 +111,6 @@ export class UIManager {
             return false;
         }
 
-        // モダンブラウザの場合
         if (navigator.clipboard && navigator.clipboard.writeText) {
             try {
                 await navigator.clipboard.writeText(text);
@@ -128,12 +118,9 @@ export class UIManager {
                 return true;
             } catch (error) {
                 console.error('Clipboard API failed:', error);
-                // フォールバックを試行
                 return this._fallbackCopy(text);
             }
         }
-
-        // フォールバック
         return this._fallbackCopy(text);
     }
 
@@ -180,4 +167,4 @@ export class UIManager {
             window.addEventListener('load', handlers.onLoad);
         }
     }
-} 
+}
