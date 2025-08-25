@@ -40,6 +40,7 @@ export class DateTimeFormatterApp {
         
         // パーサーの現在年を更新
         this.parser.updateCurrentYear(todayInfo.year);
+        this.uiManager.displayBaseYearInfo(todayInfo.year);
     }
 
     /**

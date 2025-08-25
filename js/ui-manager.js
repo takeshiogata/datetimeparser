@@ -16,7 +16,7 @@ export class UIManager {
     _getDOMElements() {
         const requiredElements = [
             'inputDates', 'outputDates', 'copyButton', 
-            'clearButton', 'messageBox', 'todaysDate', 'todaysWeekday', 'versionInfo'
+            'clearButton', 'messageBox', 'todaysDate', 'todaysWeekday', 'versionInfo', 'baseYearInfo'
         ];
 
         const elements = {};
@@ -92,6 +92,14 @@ export class UIManager {
     displayTodayInfo(todayInfo) {
         this.elements.todaysDate.textContent = `今日の日付: ${todayInfo.year}年${todayInfo.month}月${todayInfo.day}日`;
         this.elements.todaysWeekday.textContent = ` (${todayInfo.dayOfWeek})`;
+    }
+
+    /**
+     * 基準年を表示する
+     * @param {number} year - 基準年
+     */
+    displayBaseYearInfo(year) {
+        this.elements.baseYearInfo.textContent = `基準年: ${year}年`;
     }
 
     /**
